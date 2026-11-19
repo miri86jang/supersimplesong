@@ -303,7 +303,7 @@ dialog::backdrop{background:rgba(30,12,20,.55)}
       <button class="ghost" id="clearSeen">본 기록 지우기</button>
     </section>
     <section class="pane" data-pane="links" hidden>
-      <p class="hint">주제마다 YouTube 재생목록 링크를 바꿀 수 있어요. 비우면 그 주제는 쓸 수 없어요. 아래로 밀면 더 보여요.</p>
+      <p class="hint">주제별 노래는 정해진 곡 목록이라 여기선 바꿀 수 없어요. 아래 "전체 모음" 재생목록 링크만 바꿀 수 있어요. 아래로 밀면 더 보여요.</p>
       <div id="fields"></div>
       <div hidden>
       <div class="grp">🎵 노래</div>
@@ -336,13 +336,15 @@ dialog::backdrop{background:rgba(30,12,20,.55)}
 
 <script>
 /* ===== 영상 목록 (YouTube 재생목록 ID = 링크의 list= 뒤에 오는 값) ===== */
+/* 주제별 노래: 스쿨인 가이드 제목을 유튜브에서 찾아 Super Simple 공식 채널 영상으로 넣었어요 */
 const SEASONS = [
-  {k:'fav',   label:'인기 동요',  id:'PLdkj6XH8GYPQwQwlkGVYQO_Jk9NLphUQC'},
-  {k:'abc',   label:'알파벳',     id:'PLdkj6XH8GYPTnhk-3uYtUYvoDbAt9TGCy'},
-  {k:'num',   label:'숫자·모양',  id:'PLdkj6XH8GYPRZ1D4bhsHJimqSAGzZg2e9'},
-  {k:'ani',   label:'동물',       id:'PLdkj6XH8GYPTaey_5gCeJF2HZt6kYLN7M'},
-  {k:'teeth', label:'이 닦기',    id:'PLdkj6XH8GYPQ2BgWZFo3S8uIp9irxyI7a'},
-  {k:'all',   label:'전체 모음',  id:'PL028565C616627F50'}
+  {k:'basic', label:'기본 동요', id:'', vids:[{"t": "Five Little Ducks", "id": "pZw9veQ76fo"}, {"t": "My Happy Song", "id": "ufbOHl1mmYk"}, {"t": "Baby Shark", "id": "GR2o6k8aPlI"}, {"t": "How Many Fingers?", "id": "xNw1SSz18Gg"}, {"t": "Rain Rain Go Away", "id": "LFrKYjrIDs8"}, {"t": "One Little Finger", "id": "eBVqcTEC3zQ"}, {"t": "Toodly Doodly Doo", "id": "BcxMAA32nbM"}, {"t": "Head Shoulders Knees And Toes", "id": "RuqvGiZi0qg"}, {"t": "Do You Like Broccoli Ice Cream?", "id": "frN3nvhIHUk"}, {"t": "Twinkle Twinkle Little Star", "id": "yCjJyiqpAuU"}]},
+  {k:'abc', label:'알파벳', id:'', vids:[{"t": "The Animal Alphabet", "id": "820CP9tLjDY"}, {"t": "ABC Quack", "id": "I_3mbra4dHU"}, {"t": "A Is For Apple", "id": "qUv_N8HzWt0"}, {"t": "The Alphabet Chant (Puppets)", "id": "AmNyA9ovXw0"}, {"t": "ABC Boo", "id": "j_-t5_c_B8w"}, {"t": "The Alphabet Song", "id": "vD98OvvDNEs"}, {"t": "ABC Song Speeding Up", "id": "H9kU_YJwNtY"}, {"t": "The Alphabet Chant", "id": "aEYcmNhz7Uc"}, {"t": "The Alphabet Swing", "id": "x7q5JVdPTng"}, {"t": "The Alphabet Song (Super Simple ABCs)", "id": "7nlf9zpj13k"}]},
+  {k:'num', label:'숫자 세기', id:'', vids:[{"t": "10 Little Dinosaurs", "id": "TjmGTbNLj6Q"}, {"t": "Five Spotted Dogs", "id": "_djvsC6ekTY"}, {"t": "500 Ducks", "id": "6VklRp158A4"}, {"t": "8 Little Planets", "id": "EO1GV4qUxgE"}, {"t": "20 Little Ducks", "id": "NcE4XUUXDhU"}, {"t": "The Crabs Go Crawling", "id": "HR5Gckafp_o"}, {"t": "Counting Up To 20", "id": "S84fcGdEULk"}, {"t": "The Ice Cream Song", "id": "KbrSWbuWtmc"}, {"t": "Seven Steps", "id": "kz_EQSfFx0g"}, {"t": "Picked A Strawberry", "id": "DW92lXc10cQ"}]},
+  {k:'ani', label:'동물', id:'', vids:[{"t": "I Love My Family", "id": "AIgJJV6-stM"}, {"t": "I'm a Great Big Spider", "id": "DX48LXcG0bk"}, {"t": "If I Were a Duck", "id": "uZrFDgO0sMQ"}, {"t": "Stomp!", "id": "zQ5bQ6tjl_M"}, {"t": "The Ducks Go Waddling", "id": "iH1ObZVqtsA"}, {"t": "Walking In The Forest", "id": "xbSSm_p782c"}, {"t": "Little Animal Dance", "id": "95OaYqIGo00"}, {"t": "Old MacDonald", "id": "_6HzoUcx3eo"}, {"t": "The Crabs Go Crawling", "id": "HR5Gckafp_o"}, {"t": "The Jellyfish", "id": "494e4txpwSg"}]},
+  {k:'fam', label:'가족', id:'', vids:[{"t": "The People In My Family", "id": "yDua9ms9_eg"}, {"t": "Baby Shark Siblings", "id": "GouAW8JrFfc"}, {"t": "Baby Shark Relatives", "id": "47LPEvvO_zI"}, {"t": "Can You Please Help Me?", "id": "OjmWon9KebI"}, {"t": "I Love My Pet", "id": "l7QHIxqi6kM"}, {"t": "I Have A Friend", "id": "azycHPuJL-A"}, {"t": "Peekaboo, I Love You", "id": "83a7wLOTsXk"}, {"t": "Grandparents Are Special", "id": "I_qUVEUZyTU"}, {"t": "Keep On Swimming", "id": "zWcJbvM6lJ8"}]},
+  {k:'teeth', label:'이 닦기·건강', id:'', vids:[{"t": "Brush Your Teeth", "id": "wCio_xVlgQ0"}, {"t": "Brush Your Teeth (Noodle & Pals)", "id": "ENAMlqxqZRI"}, {"t": "A Visit To The Dentist", "id": "70loZVsvaqM"}, {"t": "Brush Your Teeth (Finny The Shark)", "id": "3X4Udn7lbuY"}, {"t": "Nice & Clean", "id": "27GtzalNyJ4"}, {"t": "This Is The Way", "id": "4XLQpRI_wOQ"}, {"t": "I Have A Loose Tooth", "id": "o44zT2S0SWs"}, {"t": "How Many Teeth Do You See?", "id": "WYtdPS0Jo0E"}, {"t": "Brush Those Germs Away!", "id": "Jd2R9C61edM"}]},
+  {k:'all', label:'전체 모음', id:'PL028565C616627F50'}
 ];
 const SONG = {k:'song', label:'🎵 노래'};
 const ITEMS = [...SEASONS];
@@ -398,7 +400,7 @@ function songText(){ const t = store.get('ss.chapters', null); return (t === nul
 function songs(){ return parseChapters(songText()); }
 
 /* ===== 시즌 선택 (아이 화면에 열어 둔 것만) ===== */
-function hasContent(it){ return it.k === 'song' ? songs().length > 0 : !!listId(it.k); }
+function hasContent(it){ if (it.vids) return it.vids.length > 0; return it.k === 'song' ? songs().length > 0 : !!listId(it.k); }
 function openKeys(){ const o = store.get('ss.open', null); return Array.isArray(o) ? o : ITEMS.map(i => i.k); }
 function visibleItems(){ const ok = openKeys(); return ITEMS.filter(i => ok.includes(i.k) && hasContent(i)); }
 function findItem(k){ return ITEMS.find(i => i.k === String(k)); }
@@ -482,6 +484,15 @@ function openSeason(k){
   resetVeils(); show('start', false); show('limit', false); show('loading', true);
   window.scrollTo(0,0);
   const last = (() => { const v = store.get('ss.last.'+k, 0); return v >= 0 ? v : 0; })();
+
+  if (item.vids){
+    S.mode = 'fixed';
+    S.items = item.vids.map(v => ({ id:v.id, vid:v.id, title:v.t }));
+    S.idx = last < S.items.length ? last : 0;
+    buildEps(); updateUi();
+    ensurePlayer(() => { if (token !== S.token) return; show('loading', false); go(S.idx, false); });
+    return;
+  }
 
   if (isSong){
     const vid = songVideo(), list = songs();
@@ -579,7 +590,7 @@ function buildEps(){
       t = it.title;
       thumb = `<span class="th song" style="background:${SONG_COLORS[i % SONG_COLORS.length]}"><span class="sn">${i+1}</span>`;
     } else {
-      t = titleMem[it.vid] || store.get('ss.t.'+it.vid, '') || (i+1)+'번째 곡';
+      t = it.title || titleMem[it.vid] || store.get('ss.t.'+it.vid, '') || (i+1)+'번째 곡';
       thumb = `<span class="th"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/${it.vid}/mqdefault.jpg">`;
     }
     b.innerHTML = thumb + `<span class="badge">${i+1}</span><span class="badge seenb">✓ 봤어요</span><span class="nowb">▶ 지금 보는 중</span></span><span class="tt"></span>`;
@@ -778,7 +789,7 @@ function fieldRow(it){
 }
 function buildFields(){
   const box = $('fields'); box.innerHTML = '';
-  SEASONS.forEach(it => box.appendChild(fieldRow(it)));
+  SEASONS.filter(it => !it.vids).forEach(it => box.appendChild(fieldRow(it)));
   $('f_songvid').value = 'https://youtu.be/' + songVideo();
   $('f_songtext').value = songText();
 }
@@ -799,7 +810,7 @@ $('autoSw').onchange = e => { tmpAuto = e.target.checked; };
 $('openSettings').onclick = () => requestSettings();
 $('closeSettings').onclick = () => dlg.close();
 $('resetLinks').onclick = () => {
-  SEASONS.forEach(it => { $('f_'+it.k).value = it.id ? 'https://www.youtube.com/playlist?list='+it.id : ''; });
+  SEASONS.filter(it => !it.vids).forEach(it => { $('f_'+it.k).value = it.id ? 'https://www.youtube.com/playlist?list='+it.id : ''; });
   $('f_songvid').value = 'https://youtu.be/' + DEFAULT_SONG_VIDEO;
   $('f_songtext').value = DEFAULT_CHAPTERS;
 };
@@ -816,6 +827,7 @@ $('saveSettings').onclick = () => {
   /* 시즌 링크 */
   const out = {};
   for (const it of SEASONS){
+    if (it.vids) continue;
     const raw = $('f_'+it.k).value.trim();
     out[it.k] = parseList(raw);
     if (raw && !out[it.k]) return setMsg(/youtu\.?be|youtube\.com\/watch/.test(raw) ? `${it.label}: 영상 링크예요. list= 가 들어간 재생목록 링크를 넣어 주세요` : `${it.label} 링크를 알아볼 수 없어요`, 'links');
@@ -832,7 +844,7 @@ $('saveSettings').onclick = () => {
   let lim = 0;
   if (lraw){ lim = parseInt(lraw, 10); if (!(lim >= 1 && lim <= 99)) return setMsg('하루에 볼 곡 수는 1~99 사이 숫자예요', 'play'); }
   /* 아이 화면에 열 영상: 하나는 있어야 해요 */
-  const usable = ITEMS.filter(it => tmpOpen.includes(it.k) && (it.k === 'song' ? chs.length > 0 : !!out[it.k]));
+  const usable = ITEMS.filter(it => tmpOpen.includes(it.k) && (it.vids ? it.vids.length > 0 : it.k === 'song' ? chs.length > 0 : !!out[it.k]));
   if (!usable.length) return setMsg('아이 화면에 열 영상을 하나 이상 골라 주세요', 'video');
 
   const prevKey = S.season, prevSig = (prevKey === 'song') ? songText() + '|' + songVideo() : listId(prevKey);
@@ -855,7 +867,7 @@ buildSelect();
 loadApi();
 {
   const vis = visibleItems();
-  let k = String(store.get('ss.season', 'fav'));
+  let k = String(store.get('ss.season', 'basic'));
   if (!vis.some(i => i.k === k)) k = vis.length ? vis[0].k : '';
   if (k) openSeason(k);
 }
